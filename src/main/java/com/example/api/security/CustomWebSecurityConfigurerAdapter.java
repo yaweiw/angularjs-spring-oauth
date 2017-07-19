@@ -17,35 +17,20 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("abc").roles("USER");
-        auth.inMemoryAuthentication().withUser("admin").password("abc").roles("ADMIN");
+        auth.inMemoryAuthentication().withUser("admin").password("abc").roles("USER_ADMIN");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .httpBasic()
-              .and()
                 .authorizeRequests()
-                  .antMatchers(HttpMethod.POST, "/api/**").permitAll()//hasRole("ADMIN")
-                  .antMatchers(HttpMethod.GET, "/api/**").permitAll();
-                  //.anyRequest().authenticated();
-        /*http
-                .authorizeRequests()
-                .antMatchers("/", "/index.html").permitAll()
+                  .antMatchers("/").authenticated()
+                  .antMatchers(HttpMethod.GET,"/api/todolist/**").hasRole("USER")
+                  .antMatchers(HttpMethod.POST,"/api/todolist/**").hasRole("USER_ADMIN")
+                  .antMatchers(HttpMethod.PUT,"/api/todolist/**").hasRole("USER_ADMIN")
                 .and()
-                .anyRequest().authenticated();
-        /*
-        http.authorizeRequests()
-                .antMatchers("/", "/home").permitAll()
-                //.antMatchers("/admin/**").access("hasRole('ADMIN')")
-                //.antMatchers("/db/**").access("hasRole('ADMIN') and hasRole('DBA')")
-                .and().formLogin().loginPage("/login")
-                .usernameParameter("user").passwordParameter("password")
-                .and().csrf()
-                .and().exceptionHandling().accessDeniedPage("/Access_Denied");
-                */
-
+                  .formLogin()
+                  .permitAll();
     }
 
 }

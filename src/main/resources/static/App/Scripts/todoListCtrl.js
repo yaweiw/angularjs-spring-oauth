@@ -3,7 +3,7 @@ angular.module('todoApp')
 .controller('todoListCtrl', ['$scope', '$location', 'todoListSvc', 'adalAuthenticationService', function ($scope, $location, todoListSvc, adalService) {
     $scope.error = "";
     $scope.loadingMessage = "Loading...";
-    $scope.todoList = ["aa","bb","cc"];//null;
+    $scope.todoList = null;
     $scope.editingInProgress = false;
     $scope.newTodoCaption = "";
 

@@ -25,12 +25,6 @@ public class TodoItem
         this.Owner = null;
     }
 
-    /*public TodoItem(String description, int id, String owner) {
-        this.Description = description;
-        this.ID = id;
-        this.Owner = owner;
-    }*/
-
     @JsonGetter("Description")
     public String getDescription() {
         return Description;

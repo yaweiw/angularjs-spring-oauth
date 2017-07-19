@@ -8,8 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,10 +22,18 @@ public class TodolistController {
     public TodolistController() {
     }
 
+    @RequestMapping("/protected")
+    public Map<String,Object> home() {
+        Map<String,Object> model = new HashMap<String,Object>();
+        model.put("id", UUID.randomUUID().toString());
+        model.put("content", "Hello World");
+        return model;
+    }
+
     /**
      * HTTP GET
      * */
-    @RequestMapping(value="/TodoList/{index}",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value="/todolist/{index}",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getTodoItem(@PathVariable("index") int index) {
         if (index > Todolist.size()) {
             return new ResponseEntity<Object>(new TodoItem(-1,"index out of range", null), HttpStatus.NOT_FOUND);
@@ -37,12 +44,12 @@ public class TodolistController {
     /**
      * HTTP GET ALL
      * */
-    @RequestMapping(value="/TodoList",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value="/todolist",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<TodoItem>> getAllTodoItems() {
         return new ResponseEntity<List<TodoItem>>(Todolist, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/TodoList",method = RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/todolist",method = RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTodoItem(@RequestBody TodoItem item) {
         item.setID(Todolist.size() + 1);
         Todolist.add(Todolist.size(), item);
@@ -53,7 +60,7 @@ public class TodolistController {
     /**
      * HTTP PUT
      * */
-    @RequestMapping(value="/TodoList",method = RequestMethod.PUT,  consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/todolist",method = RequestMethod.PUT,  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateTodoItem(@RequestBody TodoItem item) {
         List<TodoItem> find = Todolist.stream().filter(i -> i.getID() == item.getID()).collect(Collectors.toList());
         if (!find.isEmpty()) {
@@ -68,7 +75,7 @@ public class TodolistController {
     /**
      * HTTP DELETE
      * */
-    @RequestMapping(value = "/TodoList/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/todolist/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteTodoItem(@PathVariable("id") int id)
     {
         List<TodoItem> find = Todolist.stream().filter(i -> i.getID() == id).collect(Collectors.toList());
