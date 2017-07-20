@@ -20,6 +20,7 @@ public class TodolistController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<TodoItem> Todolist = new ArrayList<TodoItem>();
     public TodolistController() {
+        Todolist.add(0, new TodoItem(2398,"anything","whoever"));
     }
 
     @RequestMapping("/protected")
@@ -53,7 +54,7 @@ public class TodolistController {
     public ResponseEntity<String> addNewTodoItem(@RequestBody TodoItem item) {
         item.setID(Todolist.size() + 1);
         Todolist.add(Todolist.size(), item);
-        logger.info("addNewTodoItem:Todolist.size = " + Todolist.size());
+        logger.info("###addNewTodoItem:Todolist.size = " + Todolist.size());
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
 
@@ -65,10 +66,10 @@ public class TodolistController {
         List<TodoItem> find = Todolist.stream().filter(i -> i.getID() == item.getID()).collect(Collectors.toList());
         if (!find.isEmpty()) {
             Todolist.set(Todolist.indexOf(find.get(0)), item);
-            logger.info("updateTodoItem:Todolist.size = " + Todolist.size());
+            logger.info("###updateTodoItem:Todolist.size = " + Todolist.size());
             return new ResponseEntity<String>(HttpStatus.OK);
         }
-        logger.info("updateTodoItem:Todolist.size = " + Todolist.size());
+        logger.info("###updateTodoItem:Todolist.size = " + Todolist.size());
         return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
     }
 
@@ -81,10 +82,10 @@ public class TodolistController {
         List<TodoItem> find = Todolist.stream().filter(i -> i.getID() == id).collect(Collectors.toList());
         if (!find.isEmpty()) {
             Todolist.remove(Todolist.indexOf(find.get(0)));
-            logger.info("deleteTodoItem:Todolist.size = " + Todolist.size());
+            logger.info("###deleteTodoItem:Todolist.size = " + Todolist.size());
             return new ResponseEntity<String>(HttpStatus.OK);
         }
-        logger.info("deleteTodoItem:Todolist.size = " + Todolist.size());
+        logger.info("###deleteTodoItem:Todolist.size = " + Todolist.size());
         return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
     }
 }
