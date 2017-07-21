@@ -24,7 +24,7 @@ public class TodolistController {
         Todolist.add(0, new TodoItem(2398,"anything","whoever"));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping("/protected")
     public Map<String,Object> home() {
         Map<String,Object> model = new HashMap<String,Object>();
