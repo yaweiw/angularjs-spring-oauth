@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -23,6 +24,7 @@ public class TodolistController {
         Todolist.add(0, new TodoItem(2398,"anything","whoever"));
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping("/protected")
     public Map<String,Object> home() {
         Map<String,Object> model = new HashMap<String,Object>();
@@ -34,6 +36,7 @@ public class TodolistController {
     /**
      * HTTP GET
      * */
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @RequestMapping(value="/todolist/{index}",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getTodoItem(@PathVariable("index") int index) {
         if (index > Todolist.size()) {
@@ -45,11 +48,13 @@ public class TodolistController {
     /**
      * HTTP GET ALL
      * */
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @RequestMapping(value="/todolist",method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<TodoItem>> getAllTodoItems() {
         return new ResponseEntity<List<TodoItem>>(Todolist, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/todolist",method = RequestMethod.POST,  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTodoItem(@RequestBody TodoItem item) {
         item.setID(Todolist.size() + 1);
@@ -61,6 +66,7 @@ public class TodolistController {
     /**
      * HTTP PUT
      * */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/todolist",method = RequestMethod.PUT,  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateTodoItem(@RequestBody TodoItem item) {
         List<TodoItem> find = Todolist.stream().filter(i -> i.getID() == item.getID()).collect(Collectors.toList());
@@ -76,6 +82,7 @@ public class TodolistController {
     /**
      * HTTP DELETE
      * */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/todolist/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteTodoItem(@PathVariable("id") int id)
     {
